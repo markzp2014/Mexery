@@ -136,12 +136,12 @@ function drawBoot(){
     }
 
 }
+
 function drawRoom(){
 
     ctx.fillStyle="#1a1a1a";
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    // Тимчасова кімната
     ctx.fillStyle="#444";
     ctx.fillRect(0,canvas.height*0.75,canvas.width,canvas.height*0.25);
 
@@ -151,7 +151,6 @@ function drawRoom(){
     ctx.fillStyle="#222";
     ctx.fillRect(canvas.width/2-40,canvas.height/2-25,80,45);
 
-    // Логотип рушія після завантаження
     ctx.fillStyle="rgba(255,255,255,0.5)";
     ctx.font="16px monospace";
     ctx.textAlign="left";
@@ -162,6 +161,9 @@ function drawRoom(){
         canvas.height-20
     );
 
+    player.update();
+    player.draw(ctx);
+    
 }
 
 function draw(){
