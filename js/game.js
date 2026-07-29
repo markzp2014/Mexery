@@ -9,103 +9,174 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
-const GameState = {
+const State = {
     BOOT: 0,
     FADE: 1,
     ROOM: 2
 };
 
-let state = GameState.BOOT;
+let state = State.BOOT;
 
-let pressFlash = false;
+let startTime = performance.now();
+let flash = false;
 let fade = 0;
-let fadeSpeed = 0.025;
+let keyPressed = false;
 
 document.addEventListener("keydown", () => {
-    if (state !== GameState.BOOT) return;
 
-    pressFlash = true;
+    if (keyPressed) return;
+    if (state !== State.BOOT) return;
+
+    keyPressed = true;
+    flash = true;
 
     setTimeout(() => {
-        pressFlash = false;
-        state = GameState.FADE;
-    }, 180);
+        flash = false;
+        state = State.FADE;
+    },150);
+
 });
 
-function update() {
+function update(){
 
-    if (state === GameState.FADE) {
-        fade += fadeSpeed;
+    if(state===State.FADE){
 
-        if (fade >= 1) {
-            fade = 1;
-            state = GameState.ROOM;
+        fade+=0.02;
+
+        if(fade>=1){
+
+            fade=1;
+            state=State.ROOM;
+
         }
+
     }
 
 }
 
-function drawBoot() {
+function drawBoot(){
 
-    ctx.fillStyle = "#000";
+    const t=(performance.now()-startTime)/1000;
+
+    ctx.fillStyle="#000";
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    ctx.textAlign = "center";
+    ctx.textAlign="center";
 
-    ctx.fillStyle = "white";
-    ctx.font = "40px monospace";
+    //----------------------------------
+    // Mexery Engine
+    //----------------------------------
+
+    let logoAlpha=0;
+
+    if(t>0.3){
+
+        logoAlpha=Math.min((t-0.3)/0.4,1);
+
+    }
+
+    ctx.fillStyle=`rgba(255,255,255,${logoAlpha})`;
+    ctx.font="42px monospace";
+
     ctx.fillText(
         "Mexery Engine v0.1",
         canvas.width/2,
-        canvas.height/2-40
+        canvas.height/2-60
     );
 
-    ctx.font = "26px monospace";
+    //----------------------------------
+    // Author
+    //----------------------------------
 
-    ctx.fillStyle = pressFlash ? "#ff0000" : "#b00000";
+    let authorAlpha=0;
 
-    ctx.fillText(
-        "Натисніть будь-яку клавішу",
-        canvas.width/2,
-        canvas.height/2+20
-    );
+    if(t>0.8){
 
-    ctx.fillStyle="white";
+        authorAlpha=Math.min((t-0.8)/0.4,1);
+
+    }
+
+    ctx.fillStyle=`rgba(255,255,255,${authorAlpha})`;
     ctx.font="20px monospace";
 
     ctx.fillText(
         "© 2026 MarkoZP",
         canvas.width/2,
-        canvas.height-60
+        canvas.height-70
     );
-}
 
+    //----------------------------------
+    // Press Any Key
+    //----------------------------------
+
+    if(t>1.3){
+
+        let pulse=(Math.sin(performance.now()/300)+1)/2;
+
+        let r=90+Math.floor(pulse*90);
+
+        if(flash){
+
+            ctx.fillStyle="#ff0000";
+
+        }else{
+
+            ctx.fillStyle=`rgb(${r},0,0)`;
+
+        }
+
+        ctx.font="28px monospace";
+
+        ctx.fillText(
+            "Натисніть будь-яку клавішу",
+            canvas.width/2,
+            canvas.height/2+20
+        );
+
+    }
+
+}
 function drawRoom(){
 
-    ctx.fillStyle="#1d1d1d";
+    ctx.fillStyle="#1a1a1a";
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    ctx.fillStyle="white";
-    ctx.font="40px monospace";
-    ctx.textAlign="center";
+    // Тимчасова кімната
+    ctx.fillStyle="#444";
+    ctx.fillRect(0,canvas.height*0.75,canvas.width,canvas.height*0.25);
+
+    ctx.fillStyle="#8b5a2b";
+    ctx.fillRect(canvas.width/2-60,canvas.height/2-30,120,60);
+
+    ctx.fillStyle="#222";
+    ctx.fillRect(canvas.width/2-40,canvas.height/2-25,80,45);
+
+    // Логотип рушія після завантаження
+    ctx.fillStyle="rgba(255,255,255,0.5)";
+    ctx.font="16px monospace";
+    ctx.textAlign="left";
 
     ctx.fillText(
-        "ROOM COMING SOON...",
-        canvas.width/2,
-        canvas.height/2
+        "Mexery Engine v0.1",
+        20,
+        canvas.height-20
     );
 
 }
 
 function draw(){
 
-    if(state===GameState.BOOT)
+    if(state===State.BOOT){
+
         drawBoot();
 
-    else
+    }else{
+
         drawRoom();
 
-    if(state===GameState.FADE){
+    }
+
+    if(state===State.FADE){
 
         ctx.fillStyle=`rgba(0,0,0,${fade})`;
         ctx.fillRect(0,0,canvas.width,canvas.height);
