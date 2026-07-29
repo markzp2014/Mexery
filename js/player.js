@@ -21,10 +21,25 @@ class Player {
 
     update() {
 
-        if (this.keys["w"]) this.y -= this.speed;
-        if (this.keys["s"]) this.y += this.speed;
-        if (this.keys["a"]) this.x -= this.speed;
-        if (this.keys["d"]) this.x += this.speed;
+    if (this.keys["w"]) {
+        console.log("W");
+        this.y -= this.speed;
+    }
+
+    if (this.keys["s"]) {
+        console.log("S");
+        this.y += this.speed;
+    }
+
+    if (this.keys["a"]) {
+        console.log("A");
+        this.x -= this.speed;
+    }
+
+    if (this.keys["d"]) {
+        console.log("D");
+        this.x += this.speed;
+    }
 
     }
 
